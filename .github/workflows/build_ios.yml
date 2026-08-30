@@ -27,9 +27,19 @@ jobs:
 
       - name: Build iOS No-Codesign IPA
         run: |
-          flutter build ios --config-only
+          # Build Flutter assets & frameworks
+          flutter build ios --release --no-codesign --simulator
+          
+          # Build Native Release App with Xcode without codesign requirement
           cd ios
-          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            EXPANDED_CODE_SIGN_IDENTITY="" \
+            DEVELOPMENT_TEAM="" \
+            build
+          
           cd ..
           mkdir -p Payload
           APP_PATH=$(find ios/build -name "Runner.app" -type d | head -n 1)
