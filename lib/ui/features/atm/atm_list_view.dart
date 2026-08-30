@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import 'atm_view_model.dart';
 import 'atm_detail_view.dart';
-import '../shared_widgets/status_badge.dart';
-import '../shared_widgets/empty_state.dart';
+import '../../shared_widgets/status_badge.dart';
+import '../../shared_widgets/empty_state.dart';
 
 class AtmListView extends StatefulWidget {
   const AtmListView({super.key});

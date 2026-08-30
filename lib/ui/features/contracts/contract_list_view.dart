@@ -4,7 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import 'contract_view_model.dart';
 import 'contract_detail_view.dart';
-import '../shared_widgets/status_badge.dart';
+import '../../shared_widgets/status_badge.dart';
 
 class ContractListView extends StatefulWidget {
   const ContractListView({super.key});

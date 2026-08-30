@@ -7,7 +7,7 @@ import '../auth/auth_view_model.dart';
 import 'ticket_view_model.dart';
 import 'ticket_update_dialog.dart';
 import 'ticket_assign_dialog.dart';
-import '../shared_widgets/status_badge.dart';
+import '../../shared_widgets/status_badge.dart';
 import '../parts/part_request_dialog.dart';
 
 class TicketDetailView extends StatefulWidget {

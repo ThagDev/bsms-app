@@ -5,8 +5,8 @@ import '../../../core/utils/formatters.dart';
 import '../auth/auth_view_model.dart';
 import 'ticket_view_model.dart';
 import 'ticket_detail_view.dart';
-import '../shared_widgets/status_badge.dart';
-import '../shared_widgets/empty_state.dart';
+import '../../shared_widgets/status_badge.dart';
+import '../../shared_widgets/empty_state.dart';
 
 class TicketListView extends StatefulWidget {
   const TicketListView({super.key});

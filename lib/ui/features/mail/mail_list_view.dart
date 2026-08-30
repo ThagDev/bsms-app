@@ -5,7 +5,7 @@ import '../../../core/utils/formatters.dart';
 import 'mail_view_model.dart';
 import 'mail_detail_view.dart';
 import 'mail_compose_view.dart';
-import '../shared_widgets/empty_state.dart';
+import '../../shared_widgets/empty_state.dart';
 
 class MailListView extends StatefulWidget {
   const MailListView({super.key});

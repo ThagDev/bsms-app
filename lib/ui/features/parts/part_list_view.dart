@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_theme.dart';
 import 'part_view_model.dart';
 import 'part_request_dialog.dart';
-import '../shared_widgets/empty_state.dart';
+import '../../shared_widgets/empty_state.dart';
 
 class PartListView extends StatefulWidget {
   const PartListView({super.key});

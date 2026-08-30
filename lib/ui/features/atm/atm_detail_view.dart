@@ -4,7 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/formatters.dart';
 import '../../../data/models/atm_model.dart';
 import 'atm_view_model.dart';
-import '../shared_widgets/status_badge.dart';
+import '../../shared_widgets/status_badge.dart';
 
 class AtmDetailView extends StatefulWidget {
   final AtmModel atm;
