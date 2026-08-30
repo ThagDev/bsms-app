@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BSMS - Bank Service Management System (Flutter Live Preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #0F3057;
+      --primary-light: #00587A;
+      --accent: #008891;
+      --bg: #F4F6F9;
+      --surface: #FFFFFF;
+      --text: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --status-pending: #F59E0B;
+      --status-progress: #3B82F6;
+      --status-completed: #10B981;
+      --status-urgent: #EF4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: #0F172A; color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+
+    /* Phone / Tablet Mockup Container */
+    .app-frame {
+      width: 100%;
+      max-width: 440px;
+      height: 880px;
+      background: var(--bg);
+      border-radius: 40px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 10px #1E293B;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Top Status Bar */
+    .status-bar {
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 10;
+    }
+
+    /* App Header */
+    .app-header {
+      background: var(--primary);
+      color: white;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .app-header .header-actions i {
+      font-size: 18px;
+      cursor: pointer;
+      margin-left: 14px;
+      transition: opacity 0.2s;
+    }
+    .app-header .header-actions i:hover { opacity: 0.8; }
+
+    /* Main Content Area */
+    .screen-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      height: 68px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
+    }
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 12px;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .nav-item i { font-size: 18px; }
+    .nav-item.active { color: var(--primary); background: rgba(0, 136, 145, 0.12); }
+    .nav-item.active i { color: var(--primary); }
+    .badge-dot {
+      position: absolute;
+      top: 4px;
+      right: 14px;
+      width: 8px;
+      height: 8px;
+      background: var(--status-urgent);
+      border-radius: 50%;
+    }
+
+    /* Cards & Components */
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 16px;
+      margin: 8px 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .card:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-pending { background: #FEF3C7; color: #B45309; }
+    .badge-progress { background: #DBEAFE; color: #1D4ED8; }
+    .badge-completed { background: #D1FAE5; color: #047857; }
+    .badge-urgent { background: #FEE2E2; color: #B91C1C; }
+
+    /* Dashboard Widgets */
+    .user-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      margin: 16px;
+      padding: 20px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 8px 20px rgba(15, 48, 87, 0.25);
+    }
+    .user-avatar {
+      width: 56px;
+      height: 56px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 16px;
+      margin-bottom: 16px;
+    }
+    .metric-box {
+      background: var(--surface);
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+    .metric-box .val { font-size: 22px; font-weight: 800; }
+    .metric-box .lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: var(--primary-light); }
+    .btn-outline {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+    .btn-outline:hover { background: rgba(15, 48, 87, 0.05); }
+
+    /* Search & Inputs */
+    .search-box {
+      padding: 12px 16px;
+      background: white;
+      border-bottom: 1px solid var(--border);
+    }
+    .input-field {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    .input-field:focus { border-color: var(--primary); ring: 2px rgba(15,48,87,0.1); }
+
+    /* Modal / Dialog */
+    .modal-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 100;
+      backdrop-filter: blur(2px);
+    }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    /* Toast */
+    .toast {
+      position: absolute;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1E293B;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-frame">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span>11:22</span>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <i class="fa-solid fa-wifi"></i>
+      <i class="fa-solid fa-signal"></i>
+      <i class="fa-solid fa-battery-full"></i>
+    </div>
+  </div>
+
+  <!-- Dynamic Header -->
+  <div class="app-header">
+    <span id="headerTitle">BẢNG ĐIỀU HÀNH KỸ THUẬT</span>
+    <div class="header-actions">
+      <i class="fa-solid fa-rotate-right" onclick="showToast('Đang làm mới dữ liệu từ Server...')"></i>
+      <i class="fa-solid fa-bell" onclick="showToast('Không có thông báo mới (F_CHECKNOTIFYCATION)')"></i>
+    </div>
+  </div>
+
+  <!-- Screen Container -->
+  <div class="screen-container" id="screenContainer">
+    <!-- View 1: Home Dashboard -->
+    <div id="viewHome">
+      <div class="user-banner">
+        <div class="user-avatar"><i class="fa-solid fa-user-gear"></i></div>
+        <div>
+          <div style="font-size: 16px; font-weight: 800;" id="userFullName">Trần Văn Kỹ Thuật</div>
+          <div style="font-size: 12px; opacity: 0.9; margin-top: 2px;">Kỹ sư Dịch vụ ATM • <span style="color: #4ADE80; font-weight: bold;">● GPS Online</span></div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <i class="fa-solid fa-clock-rotate-left" style="color: var(--status-progress);"></i>
+            <span class="val" style="color: var(--status-progress);">2</span>
+          </div>
+          <div class="lbl">Sự cố đang xử lý</div>
+        </div>
+        <div class="metric-box">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <i class="fa-solid fa-triangle-exclamation" style="color: var(--status-urgent);"></i>
+            <span class="val" style="color: var(--status-urgent);">1</span>
+          </div>
+          <div class="lbl">Cảnh báo SLA gấp</div>
+        </div>
+        <div class="metric-box">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <i class="fa-solid fa-cash-register" style="color: var(--status-pending);"></i>
+            <span class="val" style="color: var(--status-pending);">4</span>
+          </div>
+          <div class="lbl">Trạm ATM quản lý</div>
+        </div>
+        <div class="metric-box">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <i class="fa-solid fa-circle-check" style="color: var(--status-completed);"></i>
+            <span class="val" style="color: var(--status-completed);">18</span>
+          </div>
+          <div class="lbl">Đã hoàn tất tuần này</div>
+        </div>
+      </div>
+
+      <div style="padding: 0 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-weight: 700; font-size: 15px;">Sự cố cần xử lý gấp (SLA)</span>
+        <span style="color: var(--accent); font-size: 12px; font-weight: 600; cursor: pointer;" onclick="switchTab(1)">Xem tất cả</span>
+      </div>
+
+      <div class="card" onclick="openTicketDetail(0)">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--primary);">TKT-2026-0881</span>
+          <span class="badge badge-urgent">Quá hạn SLA</span>
+        </div>
+        <div style="font-weight: 700; font-size: 14px;">Lỗi kẹt tiền tại khay số 2</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">VCB-HNI-0042 • Vietcombank Hoàn Kiếm</div>
+      </div>
+
+      <div class="card" onclick="openTicketDetail(1)">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--primary);">TKT-2026-0879</span>
+          <span class="badge badge-progress">Đang xử lý</span>
+        </div>
+        <div style="font-weight: 700; font-size: 14px;">Màn hình cảm ứng bị lệch cảm ứng</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">BIDV-DDA-0115 • BIDV Đống Đa</div>
+      </div>
+    </div>
+
+    <!-- View 2: Tickets -->
+    <div id="viewTickets" style="display: none;">
+      <div class="search-box">
+        <input type="text" class="input-field" placeholder="🔍 Tìm kiếm mã Ticket, ATM..." oninput="filterTickets(this.value)">
+      </div>
+      <div id="ticketListContainer">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- View 3: ATM List -->
+    <div id="viewAtm" style="display: none;">
+      <div class="search-box">
+        <input type="text" class="input-field" placeholder="🔍 Tìm mã trạm, số serial ATM...">
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 800; color: var(--primary);">VCB-HNI-0042</span>
+          <span class="badge badge-urgent">Có sự cố</span>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin-top: 4px;">Diebold Nixdorf Opteva 828</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">12 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội</div>
+        <button class="btn btn-outline" style="width: 100%; margin-top: 10px; padding: 8px;" onclick="showToast('Đang mở bản đồ điều hướng đến trạm ATM...')"><i class="fa-solid fa-location-arrow"></i> Định vị chỉ đường</button>
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 800; color: var(--primary);">BIDV-DDA-0115</span>
+          <span class="badge badge-progress">Chờ xử lý</span>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin-top: 4px;">Hyosung Monimax 7600T</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">71 Nguyễn Chí Thanh, Đống Đa, Hà Nội</div>
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 800; color: var(--primary);">TCB-CGY-0098</span>
+          <span class="badge badge-completed">Hoạt động</span>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin-top: 4px;">NCR SelfServ 84 Walk-Up</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Tòa nhà Duy Tân, Cầu Giấy, Hà Nội</div>
+      </div>
+    </div>
+
+    <!-- View 4: Contracts -->
+    <div id="viewContracts" style="display: none;">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 800; color: var(--primary);">HD-VCB-2024-08</span>
+          <span class="badge badge-completed">Hiệu lực</span>
+        </div>
+        <div style="font-weight: 700; font-size: 14px; margin-top: 4px;">Bảo dưỡng toàn diện hệ thống ATM VCB</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Vietcombank • 120 máy ATM • Phía Bắc</div>
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 800; color: var(--primary);">HD-BIDV-2025-01</span>
+          <span class="badge badge-completed">Hiệu lực</span>
+        </div>
+        <div style="font-weight: 700; font-size: 14px; margin-top: 4px;">Dịch vụ ứng cứu sự cố ATM & CDM</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">BIDV • 85 máy ATM • Hà Nội & Hải Phòng</div>
+      </div>
+    </div>
+
+    <!-- View 5: Mail -->
+    <div id="viewMail" style="display: none;">
+      <div class="card" style="background: #EFF6FF;" onclick="showToast('Chi tiết: Yêu cầu có mặt tại hiện trường trước 12:00...')">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 800; font-size: 13px;">Trung tâm Điều độ Kỹ thuật</span>
+          <span style="font-size: 11px; color: var(--text-muted);">10:30</span>
+        </div>
+        <div style="font-weight: 700; font-size: 13px; margin-top: 4px;">[Khẩn] Phân công xử lý ATM VCB-HNI-0042</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Kỹ sư kiểm tra lỗi kẹt tiền khay số 2...</div>
+      </div>
+      <div class="card" onclick="showToast('Đã đọc thư thông báo ca trực.')">
+        <div style="display: flex; justify-content: space-between;">
+          <span style="font-weight: 700; font-size: 13px;">Trưởng nhóm Dịch vụ</span>
+          <span style="font-size: 11px; color: var(--text-muted);">Hôm qua</span>
+        </div>
+        <div style="font-weight: 600; font-size: 13px; margin-top: 4px;">Lịch trực kỹ thuật cuối tuần & lễ</div>
+      </div>
+    </div>
+
+    <!-- View 6: Settings -->
+    <div id="viewSettings" style="display: none;">
+      <div class="card">
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 12px;">Cấu hình Server Backend (F_39)</div>
+        <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Địa chỉ IP / Endpoint:</label>
+        <input type="text" class="input-field" value="http://115.78.3.210:8082/MobiFunc/Mobi.aspx" style="margin-top: 4px; margin-bottom: 12px;">
+        <button class="btn" style="width: 100%;" onclick="showToast('Ping F_39: Đã kiểm tra kết nối máy chủ thành công (200 OK)!')"><i class="fa-solid fa-satellite-dish"></i> Kiểm tra Ping Server</button>
+      </div>
+
+      <div class="card">
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 12px;">Đồng bộ Master Data (SQLite BSI.db)</div>
+        <button class="btn btn-outline" style="width: 100%;" onclick="showToast('Đã đồng bộ Tỉnh thành, Khách hàng, Mã lỗi về SQLite (F_07, F_08, F_11)')"><i class="fa-solid fa-cloud-arrow-down"></i> Đồng bộ ngay</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab(0)">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Tổng quan</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(1)">
+      <i class="fa-solid fa-ticket"></i>
+      <span>Sự cố</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(2)">
+      <i class="fa-solid fa-cash-register"></i>
+      <span>Trạm ATM</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(3)">
+      <i class="fa-solid fa-file-contract"></i>
+      <span>Hợp đồng</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(4)">
+      <div class="badge-dot"></div>
+      <i class="fa-solid fa-envelope"></i>
+      <span>Hòm thư</span>
+    </div>
+    <div class="nav-item" onclick="switchTab(5)">
+      <i class="fa-solid fa-gear"></i>
+      <span>Cài đặt</span>
+    </div>
+  </div>
+
+  <!-- Ticket Detail Modal -->
+  <div class="modal-overlay" id="ticketModal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <span style="font-weight: 800; color: var(--primary);" id="modalTicketNo">TKT-2026-0881</span>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 18px;" onclick="closeModal()"></i>
+      </div>
+      <h3 id="modalTicketTitle" style="font-size: 16px; margin-bottom: 8px;">Lỗi kẹt tiền tại khay số 2</h3>
+      <p id="modalTicketContent" style="font-size: 13px; color: var(--text-muted); line-height: 1.4; margin-bottom: 16px;">Khách hàng nạp tiền 500k bị kẹt mô-tơ cuốn tiền, máy chuyển sang chế độ tạm ngưng phục vụ.</p>
+      
+      <div style="background: #FEF2F2; border: 1px solid #FECACA; padding: 10px; border-radius: 10px; font-size: 12px; color: #991B1B; font-weight: 600; margin-bottom: 16px;">
+        ⏱ Hạn cam kết SLA: 12:00 Hôm nay
+      </div>
+
+      <button class="btn" style="width: 100%; margin-bottom: 8px;" onclick="updateProgress()"><i class="fa-solid fa-check"></i> Cập nhật Hoàn tất xử lý (F_05)</button>
+      <button class="btn btn-outline" style="width: 100%;" onclick="requestPart()"><i class="fa-solid fa-wrench"></i> Đề xuất cấp Linh kiện (F_50)</button>
+    </div>
+  </div>
+
+  <!-- Toast Element -->
+  <div class="toast" id="toast">Thông báo hệ thống</div>
+</div>
+
+<script>
+  const tickets = [
+    { no: 'TKT-2026-0881', title: 'Lỗi kẹt tiền tại khay số 2', atm: 'VCB-HNI-0042', cust: 'Vietcombank Hoàn Kiếm', status: 'Quá hạn SLA', badge: 'badge-urgent', desc: 'Mô-tơ cuốn tiền CDM bị kẹt tiền mệnh giá 500k.' },
+    { no: 'TKT-2026-0879', title: 'Màn hình cảm ứng bị lệch cảm ứng', atm: 'BIDV-DDA-0115', cust: 'BIDV Đống Đa', status: 'Đang xử lý', badge: 'badge-progress', desc: 'Panel cảm ứng hồng ngoại 15-inch chạm góc phải không nhận.' },
+    { no: 'TKT-2026-0865', title: 'Mất kết nối mạng VPN', atm: 'TCB-CGY-0098', cust: 'Techcombank Cầu Giấy', status: 'Hoàn thành', badge: 'badge-completed', desc: 'Đã thay dây mạng và khởi động lại Router 4G.' }
+  ];
+
+  function renderTickets() {
+    const container = document.getElementById('ticketListContainer');
+    container.innerHTML = tickets.map((t, idx) => `
+      <div class="card" onclick="openTicketDetail(${idx})">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span style="font-size: 11px; font-weight: 700; color: var(--primary);">${t.no}</span>
+          <span class="badge ${t.badge}">${t.status}</span>
+        </div>
+        <div style="font-weight: 700; font-size: 14px;">${t.title}</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">${t.atm} • ${t.cust}</div>
+      </div>
+    `).join('');
+  }
+  renderTickets();
+
+  const titles = ['BẢNG ĐIỀU HÀNH KỸ THUẬT', 'QUẢN LÝ SỰ CỐ (TICKETS)', 'DANH SÁCH TRẠM ATM', 'HỢP ĐỒNG & DỊCH VỤ', 'HÒM THƯ NỘI BỘ', 'CÀI ĐẶT & HỆ THỐNG'];
+  const viewIds = ['viewHome', 'viewTickets', 'viewAtm', 'viewContracts', 'viewMail', 'viewSettings'];
+
+  function switchTab(index) {
+    document.querySelectorAll('.nav-item').forEach((el, idx) => {
+      el.classList.toggle('active', idx === index);
+    });
+    viewIds.forEach((id, idx) => {
+      document.getElementById(id).style.display = idx === index ? 'block' : 'none';
+    });
+    document.getElementById('headerTitle').innerText = titles[index];
+  }
+
+  function openTicketDetail(index) {
+    const t = tickets[index];
+    document.getElementById('modalTicketNo').innerText = t.no;
+    document.getElementById('modalTicketTitle').innerText = t.title;
+    document.getElementById('modalTicketContent').innerText = t.desc;
+    document.getElementById('ticketModal').style.display = 'flex';
+  }
+
+  function closeModal() {
+    document.getElementById('ticketModal').style.display = 'none';
+  }
+
+  function updateProgress() {
+    closeModal();
+    showToast('Đã gửi cập nhật trạng thái sự cố lên máy chủ (F_UPDATETICKET)!');
+  }
+
+  function requestPart() {
+    closeModal();
+    showToast('Đã tạo đề xuất cấp Linh kiện cho sự cố (F_ADD_REQUEST_DEVICE)!');
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.innerText = msg;
+    toast.style.display = 'block';
+    setTimeout(() => { toast.style.display = 'none'; }, 2800);
+  }
+</script>
+</body>
+</html>
