@@ -27,26 +27,19 @@ jobs:
 
       - name: Build iOS No-Codesign IPA
         run: |
-          # Build Flutter assets & frameworks
-          flutter build ios --release --no-codesign --simulator
+          # 1. Prepare Xcode Project settings without codesign
+          sed -i '' 's/CODE_SIGN_IDENTITY = "iPhone Developer";/CODE_SIGN_IDENTITY = "";/g' ios/Runner.xcodeproj/project.pbxproj 2>/dev/null || true
+          sed -i '' 's/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "iPhone Developer";/"CODE_SIGN_IDENTITY\[sdk=iphoneos\*\]" = "";/g' ios/Runner.xcodeproj/project.pbxproj 2>/dev/null || true
           
-          # Build Native Release App with Xcode without codesign requirement
+          # 2. Build Release Archive using xcodebuild
           cd ios
-          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos \
-            CODE_SIGNING_ALLOWED=NO \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
-            EXPANDED_CODE_SIGN_IDENTITY="" \
-            DEVELOPMENT_TEAM="" \
-            build
-          
+          pod install || true
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -destination 'generic/platform=iOS' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO -derivedDataPath build_output build
           cd ..
+
+          # 3. Create Payload and Zip IPA
           mkdir -p Payload
-          APP_PATH=$(find ios/build -name "Runner.app" -type d | head -n 1)
-          if [ -z "$APP_PATH" ]; then
-            APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
-          fi
-          cp -r "$APP_PATH" Payload/
+          find ios/build_output -name "Runner.app" -type d -exec cp -r {} Payload/ \;
           zip -r BSMS_iOS_Test.ipa Payload
 
       - name: Upload iOS IPA Artifact
