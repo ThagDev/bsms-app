@@ -12,17 +12,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
           cache: true
+
+      - name: Initialize Platform Folders
+        run: |
+          flutter create . --org bsi.vn --platforms=ios --project-name=bsms_flutter
 
       - name: Install Dependencies
         run: flutter pub get
@@ -58,6 +56,10 @@ jobs:
         with:
           channel: 'stable'
           cache: true
+
+      - name: Initialize Platform Folders
+        run: |
+          flutter create . --org bsi.vn --platforms=android --project-name=bsms_flutter
 
       - name: Install Dependencies
         run: flutter pub get
