@@ -25,7 +25,6 @@ class AppTheme {
         primary: primaryNavy,
         secondary: accentCyan,
         surface: surfaceWhite,
-        background: backgroundLight,
         error: statusUrgent,
       ),
       scaffoldBackgroundColor: backgroundLight,
@@ -41,7 +40,7 @@ class AppTheme {
           letterSpacing: 0.2,
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surfaceWhite,
         elevation: 1,
         shadowColor: Colors.black.withOpacity(0.08),
@@ -88,8 +87,8 @@ class AppTheme {
         backgroundColor: Colors.white,
         elevation: 8,
         indicatorColor: accentCyan.withOpacity(0.2),
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: primaryNavy);
           }
           return TextStyle(fontSize: 12, color: Colors.grey.shade600);
@@ -108,7 +107,6 @@ class AppTheme {
         primary: const Color(0xFF4DA8DA),
         secondary: accentCyan,
         surface: const Color(0xFF1E293B),
-        background: const Color(0xFF0F172A),
       ),
       scaffoldBackgroundColor: const Color(0xFF0F172A),
       appBarTheme: const AppBarTheme(
@@ -116,7 +114,7 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: const Color(0xFF1E293B),
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

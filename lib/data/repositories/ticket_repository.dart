@@ -1,3 +1,4 @@
+import 'package:sqflite/sqflite.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/network/api_client.dart';
 import '../../core/database/database_helper.dart';
