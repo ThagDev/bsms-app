@@ -8,6 +8,8 @@ import '../auth/auth_view_model.dart';
 import '../auth/login_view.dart';
 import '../auth/profile_view.dart';
 
+import '../navigation/main_navigation_scaffold.dart';
+
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
@@ -18,7 +20,19 @@ class SettingsView extends StatelessWidget {
     final currentConfig = ApiClient().config;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('CÀI ĐẶT & HỆ THỐNG')),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          tooltip: 'Mở danh mục',
+          onPressed: () => MainNavigationScaffold.of(context)?.openDrawer() ?? Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text(
+          'CÀI ĐẶT & HỆ THỐNG',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

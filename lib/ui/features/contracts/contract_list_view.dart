@@ -6,6 +6,8 @@ import 'contract_view_model.dart';
 import 'contract_detail_view.dart';
 import '../../shared_widgets/status_badge.dart';
 
+import '../navigation/main_navigation_scaffold.dart';
+
 class ContractListView extends StatefulWidget {
   const ContractListView({super.key});
 
@@ -35,7 +37,19 @@ class _ContractListViewState extends State<ContractListView> {
     final contractVM = context.watch<ContractViewModel>();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('HỢP ĐỒNG & DỊCH VỤ (F_17)')),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          tooltip: 'Mở danh mục',
+          onPressed: () => MainNavigationScaffold.of(context)?.openDrawer() ?? Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text(
+          'HỢP ĐỒNG & DỊCH VỤ',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
       body: Column(
         children: [
           Container(

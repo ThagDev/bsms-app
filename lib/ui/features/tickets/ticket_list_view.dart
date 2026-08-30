@@ -8,6 +8,8 @@ import 'ticket_detail_view.dart';
 import '../../shared_widgets/status_badge.dart';
 import '../../shared_widgets/empty_state.dart';
 
+import '../navigation/main_navigation_scaffold.dart';
+
 class TicketListView extends StatefulWidget {
   const TicketListView({super.key});
 
@@ -54,15 +56,25 @@ class _TicketListViewState extends State<TicketListView> with SingleTickerProvid
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('QUẢN LÝ SỰ CỐ (TICKETS)'),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          tooltip: 'Mở danh mục',
+          onPressed: () => MainNavigationScaffold.of(context)?.openDrawer() ?? Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text(
+          'QUẢN LÝ SỰ CỐ',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: AppTheme.accentCyan,
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           tabs: [
-            const Tab(text: 'Cá nhân (F_03)'),
-            Tab(text: isLeader ? 'Đội ngũ / Phân công (F_45)' : 'Toàn đội (F_45)'),
+            const Tab(text: 'Cá nhân'),
+            Tab(text: isLeader ? 'Phân công đội' : 'Toàn đội'),
           ],
         ),
       ),

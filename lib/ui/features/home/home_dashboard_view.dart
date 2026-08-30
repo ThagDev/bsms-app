@@ -11,6 +11,8 @@ import '../tickets/ticket_list_view.dart';
 import '../atm/atm_list_view.dart';
 import '../parts/part_list_view.dart';
 
+import '../navigation/main_navigation_scaffold.dart';
+
 class HomeDashboardView extends StatefulWidget {
   const HomeDashboardView({super.key});
 
@@ -35,7 +37,17 @@ class _HomeDashboardViewState extends State<HomeDashboardView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BẢNG ĐIỀU HÀNH KỸ THUẬT'),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          tooltip: 'Mở danh mục',
+          onPressed: () => MainNavigationScaffold.of(context)?.openDrawer() ?? Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text(
+          'TỔNG QUAN HỆ THỐNG',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

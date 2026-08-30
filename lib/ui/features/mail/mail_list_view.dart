@@ -7,6 +7,8 @@ import 'mail_detail_view.dart';
 import 'mail_compose_view.dart';
 import '../../shared_widgets/empty_state.dart';
 
+import '../navigation/main_navigation_scaffold.dart';
+
 class MailListView extends StatefulWidget {
   const MailListView({super.key});
 
@@ -29,10 +31,21 @@ class _MailListViewState extends State<MailListView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HÒM THƯ NỘI BỘ (F_20)'),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          tooltip: 'Mở danh mục',
+          onPressed: () => MainNavigationScaffold.of(context)?.openDrawer() ?? Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text(
+          'HÒM THƯ NỘI BỘ',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: 'Làm mới',
             onPressed: () => mailVM.loadEmails(),
           ),
         ],

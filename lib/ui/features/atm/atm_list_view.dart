@@ -6,6 +6,8 @@ import 'atm_detail_view.dart';
 import '../../shared_widgets/status_badge.dart';
 import '../../shared_widgets/empty_state.dart';
 
+import '../navigation/main_navigation_scaffold.dart';
+
 class AtmListView extends StatefulWidget {
   const AtmListView({super.key});
 
@@ -36,7 +38,17 @@ class _AtmListViewState extends State<AtmListView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DANH SÁCH TRẠM ATM (F_09)'),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          tooltip: 'Mở danh mục',
+          onPressed: () => MainNavigationScaffold.of(context)?.openDrawer() ?? Scaffold.of(context).openDrawer(),
+        ),
+        title: const Text(
+          'DANH SÁCH TRẠM ATM',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       body: Column(
         children: [
