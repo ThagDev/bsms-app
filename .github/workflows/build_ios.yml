@@ -27,17 +27,23 @@ jobs:
 
       - name: Build iOS No-Codesign IPA
         run: |
-          flutter build ios --release --no-codesign
-          cd build/ios/iphoneos
+          flutter build ios --config-only
+          cd ios
+          xcodebuild -workspace Runner.xcworkspace -scheme Runner -configuration Release -sdk iphoneos CODE_SIGNING_ALLOWED=NO CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO build
+          cd ..
           mkdir -p Payload
-          cp -r Runner.app Payload/
+          APP_PATH=$(find ios/build -name "Runner.app" -type d | head -n 1)
+          if [ -z "$APP_PATH" ]; then
+            APP_PATH=$(find build -name "Runner.app" -type d | head -n 1)
+          fi
+          cp -r "$APP_PATH" Payload/
           zip -r BSMS_iOS_Test.ipa Payload
 
       - name: Upload iOS IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: BSMS_iOS_Test.ipa
-          path: build/ios/iphoneos/BSMS_iOS_Test.ipa
+          path: BSMS_iOS_Test.ipa
 
   build-android:
     runs-on: ubuntu-latest
